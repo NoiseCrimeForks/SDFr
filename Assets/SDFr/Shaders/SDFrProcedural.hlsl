@@ -60,4 +60,31 @@ Varyings_Proc vert_proc_quad(appdata_proc input)
     return output;   
 }
 
+
+// Procedural quad generation with varying rayDir across quad.
+// Note: Dont think we explcility use/need texcoords.
+uniform float4x4 _FrustumWorldCorners;
+
+struct appdata_frustum_corners
+{
+	uint vertexID : SV_VertexID;
+};
+
+struct Varyings_Frustum_Corners
+{
+	float2 texcoord		: TEXCOORD0;
+	float3 raydir		: TEXCOORD1;
+	float4 positionCS	: SV_POSITION;
+};
+
+Varyings_Frustum_Corners vert_frustum_corners_quad(appdata_frustum_corners input)
+{
+	Varyings_Frustum_Corners output;
+	output.positionCS		= GetQuadVertexPosition(input.vertexID) * float4(_BlitScaleBiasRt.x, _BlitScaleBiasRt.y, 1, 1) + float4(_BlitScaleBiasRt.z, _BlitScaleBiasRt.w, 0, 0);
+	output.positionCS.xy	= output.positionCS.xy * float2(2.0f, -2.0f) + float2(-1.0f, 1.0f); //convert to -1..1
+	output.texcoord			= GetQuadTexCoord(input.vertexID) * _BlitScaleBias.xy + _BlitScaleBias.zw;
+	uint index				= output.texcoord.x + (2 * output.texcoord.y);
+	output.raydir			= _FrustumWorldCorners[index].xyz;
+	return output;
+}
 #endif

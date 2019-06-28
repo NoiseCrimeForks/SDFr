@@ -16,7 +16,7 @@ namespace SDFr
         [SerializeField] private float previewEpsilon = 0.003f;
         [SerializeField] private float previewNormalDelta = 0.02f;
         [SerializeField] private Visualisation previewMode = Visualisation.Normal;
-		
+		[SerializeField] private bool useRayDirVertShader = false;
 
         [SerializeField] private SDFData sdfData;
         [SerializeField] private Texture3D debugTex3D; //for viewing existing texture3D not baked with SDFr
@@ -27,24 +27,25 @@ namespace SDFr
 
 		public void LogDistances()
 		{
-			// No debugging if the volume is > 8^3 as thats more than 512 entries!
-			if ( sdfData.sdfTexture.width * sdfData.sdfTexture.height * sdfData.sdfTexture.depth > 512 ) return;
-			
 			float[] data    = VolumeComputeMethods.ExtractVolumeFloatData( sdfData.sdfTexture, volumeComputeMethodsShader);
 			Vector3Int dim  = new Vector3Int( sdfData.sdfTexture.width, sdfData.sdfTexture.height, sdfData.sdfTexture.depth);
 			string log      = $"{this.name}  Dimension: {dim}  MaxLength: {sdfData.maxDistance} Mag: {bounds.size.magnitude}\n";
 
-			for ( int z = 0; z < sdfData.sdfTexture.depth; z++ )
+			// No debugging if the volume is > 8^3 as thats more than 512 entries!
+			if ( sdfData.sdfTexture.width * sdfData.sdfTexture.height * sdfData.sdfTexture.depth <= 512 )
 			{
-				for ( int y = 0; y < sdfData.sdfTexture.height; y++ )
+				for ( int z = 0; z < sdfData.sdfTexture.depth; z++ )
 				{
-					for ( int x = 0; x < sdfData.sdfTexture.width; x++ )
+					for ( int y = 0; y < sdfData.sdfTexture.height; y++ )
 					{
-						log += string.Format( "{0:F6}, ", data[ z * dim.y * dim.x + y * dim.x + x ] * bounds.size.magnitude );
+						for ( int x = 0; x < sdfData.sdfTexture.width; x++ )
+						{
+							log += string.Format( "{0:F6}, ", data[ z * dim.y * dim.x + y * dim.x + x ] * bounds.size.magnitude );
+						}
+						log += "\n";
 					}
 					log += "\n";
 				}
-				log += "\n";
 			}
 
 			Debug.Log(log);
@@ -52,21 +53,19 @@ namespace SDFr
 
 #if UNITY_EDITOR
         
-        private const string _sdfPreviewShaderName = "XRA/SDFr";
+        private const string _sdfPreviewShaderStandardName		= "XRA/SDFr";
+		private const string _sdfPreviewShaderVaryingRayName	= "XRA/SDFrCorners";
         private static Shader _shader; //TODO better way 
         
         public override AVolumePreview<SDFData> CreatePreview()
         {
-            if (_shader == null)
-            {
-                _shader = Shader.Find(_sdfPreviewShaderName);
-            }
-            
+			_shader = Shader.Find( useRayDirVertShader ? _sdfPreviewShaderVaryingRayName : _sdfPreviewShaderStandardName);
+
+            // if (_shader == null) _shader = Shader.Find( _sdfPreviewShaderStandardName);
+                        
             AVolumePreview<SDFData> sdf = new SDFPreview(sdfData, _shader, transform);
-            if (debugTex3D != null)
-            {
-                (sdf as SDFPreview).debugTex3D = debugTex3D;
-            }
+
+            if (debugTex3D != null) (sdf as SDFPreview).debugTex3D = debugTex3D;            
 
             return sdf;
         }
@@ -87,7 +86,7 @@ namespace SDFr
             
             SDFPreview preview = _aPreview as SDFPreview;
             
-            preview?.Draw(cam,sdfFlip,previewEpsilon,previewNormalDelta);
+            preview?.Draw(cam,sdfFlip,previewEpsilon,previewNormalDelta, useRayDirVertShader);
         }
         
         public override void Bake()
@@ -175,7 +174,7 @@ namespace SDFr
             float minAxis = Mathf.Min( sdfData.bounds.size.x, Mathf.Min( sdfData.bounds.size.y, sdfData.bounds.size.z ) );
             sdfData.nonUniformScale = new Vector3( sdfData.bounds.size.x/minAxis, sdfData.bounds.size.y/minAxis, sdfData.bounds.size.z/minAxis );
 
-			bool mipmaps = true;
+			bool mipmaps = false;
 
 			// Create Texture3D and set name to filename of sdfData
             Texture3D newTex	= new Texture3D( sdfData.dimensions.x, sdfData.dimensions.y, sdfData.dimensions.z, TextureFormat.RHalf, mipmaps);
@@ -246,10 +245,17 @@ namespace SDFr
 
 			int index = 0;
 
-			for ( int z = 0; z < sdfData.sdfTexture.depth; z+=2 )			
-				for ( int y = 0; y < sdfData.sdfTexture.height; y+=2 )				
-					for ( int x = 0; x < sdfData.sdfTexture.width; x+=2 )					
-						colorBuffer[index++] = new Color( distances[ z * dim.y * dim.x + y * dim.x + x ] ,0f, 0f, 0f);				
+			for ( int z = 0; z < sdfData.sdfTexture.depth; z += 2 )
+				for ( int y = 0; y < sdfData.sdfTexture.height; y += 2 )
+					for ( int x = 0; x < sdfData.sdfTexture.width; x += 2 )
+					{
+						float dist = distances[ z * dim.y * dim.x + y * dim.x + x ] ;
+						if (  dist < previewEpsilon && ( x == 0 || y == 0 || z == 0 || 
+							x == sdfData.sdfTexture.width - 2 || 
+							y == sdfData.sdfTexture.height - 2 || 
+							z == sdfData.sdfTexture.depth - 2) ) dist = previewEpsilon;
+						colorBuffer[ index++ ] = new Color( dist, 0f, 0f, 0f );
+					}
 			
 			
 			// Create Texture3D and set name to filename of sdfData

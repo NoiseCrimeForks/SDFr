@@ -1,4 +1,4 @@
-Shader "XRA/SDFr"
+Shader "XRA/SDFrCorners"
 {
 	Properties
 	{
@@ -59,8 +59,8 @@ Shader "XRA/SDFr"
 			// TODO: In 2019 - change to shader_feature_local 
 			#pragma shader_feature _ SDFr_VISUALIZE_STEPS SDFr_VISUALIZE_HEATMAP SDFr_VISUALIZE_DIST
 
-            #pragma vertex vert_proc_quad
-            #pragma fragment Frag
+            #pragma vertex		vert_frustum_corners_quad
+            #pragma fragment	Frag
 		
             #define MAX_STEPS 1024
             #define EPSILON 0.003
@@ -178,11 +178,8 @@ Shader "XRA/SDFr"
                             float3 normalWS = mul((float3x3)_SDFVolumeLocalToWorld,normalLS);
                             
                             //local to world ray hit position
-                         //   float3 rayHitWS = mul(_SDFVolumeLocalToWorld,float4(enterLS + rdLS * dist,1)).xyz;
 							float3 rayHitWS = mul(_SDFVolumeLocalToWorld, float4(rayPosLS, 1)).xyz;
 
-							// BUG: Depth value appears incorrect in preview mode - it intersects with geometry when it shouldn't.
-						
                             //NOTE only needed for depth if mixing with depth buffer
                         //    float4 ndc = UnityObjectToClipPos(float4(rayPosLS, 1)); 
 						//	float4 ndc = mul(UNITY_MATRIX_MVP,float4(rayPosLS,1));
@@ -220,12 +217,13 @@ Shader "XRA/SDFr"
                 return o;
             }
             
-            OutputPS Frag( Varyings_Proc input )
+            OutputPS Frag( Varyings_Frustum_Corners input )
             {            
                 //ray origin
                 float3 ro = _WorldSpaceCameraPos;
                 //ray from camera to pixel coordinates in world space
-                float3 rd = -normalize(mul(float3(input.positionCS.xy, 1.0), (float3x3)_PixelCoordToViewDirWS));
+				float3 rd = normalize(input.raydir.xyz);
+                // float3 rd = -normalize(mul(float3(input.positionCS.xy, 1.0), (float3x3)_PixelCoordToViewDirWS));
                 
                 //if using blue noise or similar to jitter rays
                 //float blueNoise = screenBlueNoise( input.texcoord ).r;

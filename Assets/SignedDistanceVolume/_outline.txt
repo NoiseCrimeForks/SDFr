@@ -1,0 +1,8 @@
+SignedDistanceVolume
+
+SignedDistanceVolumeBehaviour
+- Bake Mesh or children to Volume
+- Links the volume with the gameObject its placed on.
+
+SignedDistanceVolumeRenderer
+- Renders the assigned SignedDistanceVolume

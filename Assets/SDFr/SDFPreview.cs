@@ -14,13 +14,17 @@ namespace SDFr
         private static readonly int _SDFPreviewEpsilon = Shader.PropertyToID("_SDFPreviewEpsilon");
         private static readonly int _SDFPreviewNormalDelta = Shader.PropertyToID("_SDFPreviewNormalDelta");
 
+		// Alternative - rayDir generation in vertex shader
+		private static readonly int _FrustumWorldCorners = Shader.PropertyToID("_FrustumWorldCorners");
+
+
         public Texture3D debugTex3D; //for viewing existing texture3D not baked with SDFr
         
         public SDFPreview(SDFData sdfData, Shader shader, Transform transform) : base(sdfData,shader,transform)
         {
         }
 
-        public void Draw( Camera camera, bool flip, float epsilon, float normalDelta )
+        public void Draw( Camera camera, bool flip, float epsilon, float normalDelta, bool rayDirVertexShader = false )
         {
             if (_disposing) return;
             if (camera == null) return;
@@ -31,27 +35,37 @@ namespace SDFr
             
             _data.SetMaterialProperties(_props);
 
-            if (debugTex3D != null)
-            {
-                _props.SetTexture("_SDFVolumeTex",debugTex3D);
-            }
-            
+            if (debugTex3D != null) _props.SetTexture("_SDFVolumeTex", debugTex3D);
+                        
             _props.SetMatrix(_SDFVolumeLocalToWorld, LocalToWorldNoScale);
             _props.SetMatrix(_SDFVolumeWorldToLocal, LocalToWorldNoScale.inverse);
-            _props.SetFloat(_SDFVolumeFlip, flip ? -1f : 1f); 
-            _props.SetVector(_BlitScaleBiasRt,new Vector4(1f,1f,0f,0f));
-            _props.SetVector(_BlitScaleBias, new Vector4(1f, 1f, 0f, 0f));
-            _props.SetFloat(_SDFPreviewEpsilon,epsilon);
-            _props.SetFloat(_SDFPreviewNormalDelta,normalDelta);
-            
-            AVolumeUtils.SetupRaymarchingMatrix(
-                camera.fieldOfView,
-                camera.worldToCameraMatrix,
-                new Vector2(camera.pixelWidth, camera.pixelHeight));
-            
+            _props.SetFloat(_SDFVolumeFlip, flip ? -1f : 1f);            
+            _props.SetFloat(_SDFPreviewEpsilon, epsilon);
+            _props.SetFloat(_SDFPreviewNormalDelta, normalDelta);
+
+			// These are connstant - add to different CBUFFER?
+			_props.SetVector(_BlitScaleBiasRt,	new Vector4(1f, 1f, 0f, 0f));
+            _props.SetVector(_BlitScaleBias,	new Vector4(1f, 1f, 0f, 0f));
+			
+			if ( rayDirVertexShader )
+			{
+				// Using procedural quad generation with rayDir calcaultion in vertex shader.
+				AVolumeUtils.ClearRaymarchingMatrix(); // just for debugging
+				// Not an actual matrix, just using matrix as convient storage type.
+				_props.SetMatrix( _FrustumWorldCorners, AVolumeUtils.GetCameraFrustumWorldCorners( camera ) );
+			}
+			else
+			{
+				AVolumeUtils.SetupRaymarchingMatrix( camera.fieldOfView, camera.worldToCameraMatrix, new Vector2( camera.pixelWidth, camera.pixelHeight ) );
+			}
+
             _cmd.Clear();
             _cmd.DrawProcedural(Matrix4x4.identity, _material, 0, MeshTopology.Quads, 4, 1, _props);
             Graphics.ExecuteCommandBuffer(_cmd);
+
+			// Debug.Log( $"rayDirVertexShader: {rayDirVertexShader} _material: {_material.shader.name}");
         }
+
+		
     }
 }

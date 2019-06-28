@@ -5,8 +5,13 @@ namespace SDFr
     public static class AVolumeUtils
     {
         private static readonly int _PixelCoordToViewDirWS = Shader.PropertyToID("_PixelCoordToViewDirWS");
-        
-        public static void SetupRaymarchingMatrix( float fieldOfView, Matrix4x4 view, Vector2 screenSize)
+
+		public static void ClearRaymarchingMatrix()
+		{
+			Shader.SetGlobalMatrix( _PixelCoordToViewDirWS, Matrix4x4.identity );
+		}
+
+		public static void SetupRaymarchingMatrix( float fieldOfView, Matrix4x4 view, Vector2 screenSize)
         {    
             Vector4 screenSizeParams = new Vector4(screenSize.x, screenSize.y, 1.0f / screenSize.x, 1.0f / screenSize.y);
             
@@ -60,5 +65,25 @@ namespace SDFr
             // Transpose for HLSL.
             return Matrix4x4.Transpose(worldToViewMatrix.transpose * viewSpaceRasterTransform);
         }
+
+		public static Matrix4x4 GetCameraFrustumWorldCorners( Camera cam )
+		{
+			Transform camTransform		= cam.transform;
+			Vector3[] frustumCorners	= new Vector3[4];
+
+			cam.CalculateFrustumCorners( new Rect( 0, 0, 1, 1 ), cam.farClipPlane, cam.stereoActiveEye, frustumCorners );
+
+			Vector3 bottomLeft	= camTransform.TransformVector(frustumCorners[0]);
+			Vector3 topLeft		= camTransform.TransformVector(frustumCorners[1]);
+			Vector3 topRight	= camTransform.TransformVector(frustumCorners[2]);
+			Vector3 bottomRight = camTransform.TransformVector(frustumCorners[3]);
+
+			Matrix4x4 frustumCornersArray = Matrix4x4.identity;
+			frustumCornersArray.SetRow( 0, bottomLeft );
+			frustumCornersArray.SetRow( 1, bottomRight );
+			frustumCornersArray.SetRow( 2, topLeft );
+			frustumCornersArray.SetRow( 3, topRight );
+			return frustumCornersArray;
+		}
     }
 }

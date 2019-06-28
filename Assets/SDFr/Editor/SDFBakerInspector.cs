@@ -16,6 +16,7 @@ namespace SDFr.Editor
         private SerializedProperty epsilonProperty;
         private SerializedProperty normalDeltaProperty;
 		private SerializedProperty previewModeProperty;
+		private SerializedProperty useRayDirVertShaderProperty;
 
         private const string strPropFitToVertices = "fitToVertices";
         private const string strPropRaySamples = "raySamples";
@@ -26,6 +27,7 @@ namespace SDFr.Editor
         private const string strPropEpsilon = "previewEpsilon";
         private const string strPropNormalDelta = "previewNormalDelta";
         private const string strPropPreviewMode = "previewMode";
+		private const string strPropUseRayDirVertShader = "useRayDirVertShader";
 
         protected override void CollectSerializedProperties()
         {
@@ -39,6 +41,7 @@ namespace SDFr.Editor
             epsilonProperty = serializedObject.FindProperty(strPropEpsilon);
             normalDeltaProperty = serializedObject.FindProperty(strPropNormalDelta);
 			previewModeProperty = serializedObject.FindProperty(strPropPreviewMode);
+			useRayDirVertShaderProperty = serializedObject.FindProperty(strPropUseRayDirVertShader);
         }
 
         protected override void OnDisable()
@@ -82,6 +85,11 @@ namespace SDFr.Editor
 
             EditorGUI.EndDisabledGroup();
             
+			//disable these when previewing
+			EditorGUI.BeginDisabledGroup( baker.IsPreviewing );
+			EditorGUILayout.PropertyField( useRayDirVertShaderProperty );
+			EditorGUI.EndDisabledGroup();
+
             //TODO if SDF Data assigned via drag & drop, adjust the bounds and settings to match SDF data
             EditorGUILayout.PropertyField(sdfDataProperty);
 			
