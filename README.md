@@ -12,21 +12,21 @@ about
 - Tested in Unity 2018.3
 
 
-![Visualisations](https://raw.githubusercontent.com/noisecrime/SDFr/master/Media/Visualisations.png)
-
 Updates By NoiseCrime
 -----
+![Visualisations](https://raw.githubusercontent.com/noisecrime/SDFr/master/Media/Visualisations.png)
 
 2019.06.28
 - Fixed SDFDebug shader depth value issue. Now SDF is correctly rendered into scene with existing models.
 - Added alternative procedural quad method that generates ray direction as varying in vertex shader - maybe more efficient?
 - Started new framework in SignedDistanceVolume folder. Work in progress.
 
+
 2019.06.25
 - Updated To include varity of visualisations of the raymarching ( distance, steps, heatmap ) to aid in learning.
 - Some code change to improve performance and address some flaws in RayMarchExample Shader.
 - Mainly being used as a testbed for learning more about rayMarching through SDF.
-- Next step is a code refctor of rayMarch shaders to unify, simplify and improve overal performance.
+- Next step is a code refactor of rayMarch shaders to unify, simplify and improve overal performance.
 
 
 Scenes
