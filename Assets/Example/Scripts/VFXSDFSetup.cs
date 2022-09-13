@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Data;
 using SDFr;
 using UnityEngine;
+#if !UNITY_2019_1_OR_NEWER
 using UnityEngine.Experimental.VFX;
+#else
+using UnityEngine.VFX;
+#endif
 using UnityEngine.Rendering;
 
 [ExecuteInEditMode]

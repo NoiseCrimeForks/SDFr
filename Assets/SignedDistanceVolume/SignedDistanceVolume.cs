@@ -5,7 +5,7 @@ using UnityEngine;
 namespace NoiseCrimeStudios.Features.Volumes
 {
 	// ScriptableObject?
-	public class SignedDistanceVolume
+	public class SignedDistanceVolume : ScriptableObject
 	{
 		public VolumeBase	volume;
 		public Bounds		bounds;

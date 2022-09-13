@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -161,6 +161,7 @@ MonoBehaviour:
   previewEpsilon: 0.003
   previewNormalDelta: 0.02
   previewMode: 0
+  useRayDirVertShader: 0
   sdfData: {fileID: 11400000, guid: 11317fd1a47144e4589f7d7eec865820, type: 2}
   debugTex3D: {fileID: 0}
   volumeComputeMethodsShader: {fileID: 7200000, guid: eb24ba230927ddf41a3048820864ae71,
@@ -286,6 +287,7 @@ MonoBehaviour:
   previewEpsilon: 0.003
   previewNormalDelta: 0.03
   previewMode: 0
+  useRayDirVertShader: 0
   sdfData: {fileID: 11400000, guid: 7739445276aee594da78ba0954406701, type: 2}
   debugTex3D: {fileID: 0}
   volumeComputeMethodsShader: {fileID: 0}
@@ -480,6 +482,7 @@ MonoBehaviour:
   previewEpsilon: 0.003
   previewNormalDelta: 0.02
   previewMode: 0
+  useRayDirVertShader: 0
   sdfData: {fileID: 11400000, guid: c5fa253e059581448a3d5704a022d364, type: 2}
   debugTex3D: {fileID: 0}
   volumeComputeMethodsShader: {fileID: 7200000, guid: eb24ba230927ddf41a3048820864ae71,
@@ -605,6 +608,7 @@ MonoBehaviour:
   previewEpsilon: 0.003
   previewNormalDelta: 0.02
   previewMode: 0
+  useRayDirVertShader: 0
   sdfData: {fileID: 11400000, guid: f106a6becbdb2d84d8b1c6bbcbdda939, type: 2}
   debugTex3D: {fileID: 0}
   volumeComputeMethodsShader: {fileID: 7200000, guid: eb24ba230927ddf41a3048820864ae71,
@@ -961,6 +965,7 @@ MonoBehaviour:
   previewEpsilon: 0.003
   previewNormalDelta: 0.0128
   previewMode: 0
+  useRayDirVertShader: 0
   sdfData: {fileID: 11400000, guid: aaa9b5a93cab6ed4ab6f1975e1dc78fa, type: 2}
   debugTex3D: {fileID: 0}
   volumeComputeMethodsShader: {fileID: 7200000, guid: eb24ba230927ddf41a3048820864ae71,
@@ -1028,6 +1033,7 @@ MonoBehaviour:
   previewEpsilon: 0.003
   previewNormalDelta: 0.02
   previewMode: 0
+  useRayDirVertShader: 0
   sdfData: {fileID: 11400000, guid: 175a8bc3d3cff834d9239c37c2835e54, type: 2}
   debugTex3D: {fileID: 0}
   volumeComputeMethodsShader: {fileID: 7200000, guid: eb24ba230927ddf41a3048820864ae71,
@@ -1204,6 +1210,7 @@ MonoBehaviour:
   previewEpsilon: 0.00116
   previewNormalDelta: 0.0142
   previewMode: 0
+  useRayDirVertShader: 0
   sdfData: {fileID: 11400000, guid: cd459fa45cdf15743949d22b553d97e7, type: 2}
   debugTex3D: {fileID: 0}
   volumeComputeMethodsShader: {fileID: 7200000, guid: eb24ba230927ddf41a3048820864ae71,
@@ -1263,6 +1270,7 @@ MonoBehaviour:
   previewEpsilon: 0.003
   previewNormalDelta: 0.02
   previewMode: 0
+  useRayDirVertShader: 0
   sdfData: {fileID: 11400000, guid: b3eb59c71f829ec4bab7e2eaeef3aa39, type: 2}
   debugTex3D: {fileID: 0}
   volumeComputeMethodsShader: {fileID: 7200000, guid: eb24ba230927ddf41a3048820864ae71,

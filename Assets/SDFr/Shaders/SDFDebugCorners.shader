@@ -18,7 +18,7 @@ Shader "XRA/SDFrCorners"
     #include "SDFrVolumeTex.hlsl"
 	#include "SDFrUtilities.hlsl"
 
-    uniform float4x4 _PixelCoordToViewDirWS;
+    // uniform float4x4 _PixelCoordToViewDirWS;
     
     Texture2D _BlueNoiseRGBA;
     SamplerState sampler_point_repeat_BlueNoiseRGBA;

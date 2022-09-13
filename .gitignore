@@ -1,14 +1,20 @@
 # ===================================== #
+# NoiseCrimeStudios                     #
+# ===================================== #
+/Assets/AssetStoreTools*
+/Assets/Exclude
+/Assets/Exclude.meta
+
+
+# ===================================== #
 # Unity                                 #
 # ===================================== #
 /[Ll]ibrary/
 /[Tt]emp/
-/[Oo]bj/
 /[Bb]uild/
 /[Bb]uilds/
-/Assets/AssetStoreTools*
-/Assets/Exclude
-/Assets/Exclude.meta
+/Logs/
+/UserSettings/
 /.idea
 
 # Unity3D generated meta files
@@ -32,7 +38,7 @@ sysinfo.txt
 ExportedObj/
 /obj/
 /debug/
-/Logs
+*.vsconfig
 *.svd
 *.user
 *.userprefs
