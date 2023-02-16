@@ -1,7 +1,7 @@
 # SDFr
 a signed distance field baker for Unity
 
-![gif](https://www.dropbox.com/s/ka6mlx2tef1lboa/oNrM0ZMpEr.gif?raw=1)
+NOTE: Unity 2021.2 now has an SDF Baking tool packaged with Visual Effect Graph, which produces far better results, I recommend giving Unity's a try (you might also be able to manually backport it to prior editor versions).
 
 about
 -----
@@ -10,7 +10,6 @@ about
 - Written distances are between -1 and +1, normalized to the bounding box magnitude.
 - Takes advantage of Jobs and Burst + Unity Mathematics, comment out the #define in SDFVolume.cs if Burst & Mathematics should not be used.
 - Tested in Unity 2018.3
-
 
 Updates By NoiseCrime
 -----
@@ -50,8 +49,6 @@ BakerTesting
 
 DepthTestCube
 - Scene for trying to determine why incorrect depth values are being written.
-
-![png](https://www.dropbox.com/s/zd07uve5o4ahgls/Unity_S1LNYsiRd5.png?raw=1)
 
 License
 -------
